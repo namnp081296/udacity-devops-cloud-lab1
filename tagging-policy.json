@@ -1,33 +1,22 @@
 {
-  "properties": {
-    "mode": "all",
-    "displayName": "Policy Deny for Creating Resources without tags",
-    "description": "This policy will audit for not allow resources to be created without assign tag.",
-    "parameters": {
-        "tagName": {
-            "type": "String",
-            "metadata": {
-                "displayName": "Tag Name",
-                "description": "Where the tag's name define."
-            }
-        }
-    },
-    "policyRule": {
-      "if": {
-        "allof": [
-          {
-            "field": "type",
-            "equals": "Microsoft.Authorization/policyDefinitions"
+      "policyType": "Custom",
+      "type": "Microsoft.Authorization/policyDefinitions",
+      "name": "tagging-policy", 
+      "properties": {
+          "mode": "all",
+          "displayName": "Policy Deny for Creating Resources without tags",
+          "description": "This policy will audit for not allow resources to be created without assign tag.",
+      "policyRule": {
+          "if": {
+              {
+                "field": "tags",
+                "exists": "false"
+              }
+            ]
           },
-          {
-            "field": "[concat('tags[', parameters('tagName'), ']')]",
-            "exists": "false"
+          "then": {
+              "effect": "deny"
           }
-        ]
-      },
-      "then": {
-        "effect": "deny"
+        }
       }
-    }
-  }
 }
