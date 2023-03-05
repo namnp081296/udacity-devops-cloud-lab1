@@ -2,17 +2,21 @@
 	"builders": [{
 		"type": "azure-arm",
  
-    	"client_id": "75ac29e6-2c41-49f3-86db-0903e7034e11",
-    	"client_secret": "ZWQ8Q~At2AAA.v.kiKEo3LTE3eoGjAKgjSzaHcRu",
-    	"subscription_id": "0c7436df-9359-4a04-b572-96ab6d89334c",
+    	"client_id": "5195b49c-8aa8-45a8-be91-acbc2beef1ff",
+    	"client_secret": "rUR8Q~vN2ZwEJEQ0J5l65pvq0w1GVJKNYtLsibii",
+    	"subscription_id": "47bf7713-533e-4f12-98d2-dcd63866167c",
  
     	"os_type": "Linux",
     	"image_publisher": "Canonical",
     	"image_offer": "UbuntuServer",
     	"image_sku": "18.04-LTS",
- 
+		
+		"azure_tags": {
+			"os": "linux"
+		},
+
     	"managed_image_resource_group_name": "Azuredevops",
-    	"managed_image_name": "myPackerImage",
+    	"managed_image_name": "myFirs",
  
     	"location": "East US",
     	"vm_size": "Standard_B1s"
