@@ -2,18 +2,18 @@
 	"builders": [{
 		"type": "azure-arm",
  
-    	"client_id": "5195b49c-8aa8-45a8-be91-acbc2beef1ff",
-    	"client_secret": "rUR8Q~vN2ZwEJEQ0J5l65pvq0w1GVJKNYtLsibii",
-    	"subscription_id": "47bf7713-533e-4f12-98d2-dcd63866167c",
+    	"client_id": "504e75ea-1f30-4a71-a4af-a8aa3cb2fcd7",
+    	"client_secret": "37L8Q~Z0l4Ng8tetYSngYRzeN2VuYs44LP1o7cxv",
+    	"subscription_id": "e2bf10f5-b611-44c7-9617-4a26610fc460",
  
     	"os_type": "Linux",
     	"image_publisher": "Canonical",
     	"image_offer": "UbuntuServer",
     	"image_sku": "18.04-LTS",
 		
-		"azure_tags": {
-			"os": "linux"
-		},
+	"azure_tags": {
+		"os": "linux"
+	},
 
     	"managed_image_resource_group_name": "Azuredevops",
     	"managed_image_name": "myFirs",
@@ -27,8 +27,7 @@
 			"nohup busybox httpd -f -p 80 &"
 		],
 		"inline_shebang": "/bin/sh -x",
-		"type": "shell",
-		"execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
+		"type": "shell"
 	}]
 }
 
