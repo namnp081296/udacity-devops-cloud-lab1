@@ -1,5 +1,2 @@
-# Test
-az policy definition create --name 'tagging-policy' --description 'Deny creation of resources if they do not have a tags' --subscription 47bf7713-533e-4f12-98d2-dcd63866167c --mode ALL --rules "{ \"if\": { \"allOf\": [{ \"field\": \"type\", \"equals\": \"Microsoft.Authorization/policyDefinitions\"}, { \"field\": \"[concat('tags[', parameters('tagName'), ']')]\", \"exists\": \"false\" }]}, \"then\": { \"effect\": \"deny\" }}" --params "{ \"tagName\": { \"type\": \"string\", \"metadata\": { \"displayName\": \"Tag Name\", \"description\": \"Where the tag's name define.\"}}
-
 # Official
-az policy definition create --name 'tagging-policy' --description 'Deny creation of resources if they do not have a tags' --subscription 47bf7713-533e-4f12-98d2-dcd63866167c --mode ALL --rules "{ \"if\": { \"field\": \"tags\", \"exists\": \"false\"}, \"then\": { \"effect\": \"deny\" } }"}
+az policy definition create --name 'tagging-policy' --description 'Deny creation of resources if they do not have a tags' --subscription <Enter your subscription> --mode ALL --rules "{ \"if\": { \"field\": \"tags\", \"exists\": \"false\"}, \"then\": { \"effect\": \"deny\" } }"}
