@@ -88,7 +88,7 @@ resource "azurerm_linux_virtual_machine" "lab01-rsg-linux-vm" {
   admin_password                  = var.admin_pwd
   disable_password_authentication = false
   network_interface_ids = [
-    element(azurerm_network_interface.lab01-rsg-nic.*.id, count.index)
+    azurerm_network_interface.lab01-rsg-nic.id
   ]
 
   os_disk {
