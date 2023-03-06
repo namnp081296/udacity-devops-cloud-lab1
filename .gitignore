@@ -1,2 +1,3 @@
 .terraform*
-lab01-terraform/*.plan
+lab01-terraform/*.pla
+terraform.*
