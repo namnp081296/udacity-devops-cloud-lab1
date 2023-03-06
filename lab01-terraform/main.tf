@@ -1,107 +1,100 @@
-resource "azurerm_resource_group" "newrsg" {
+resource "azurerm_resource_group" "lab01-rsg" {
   name     = var.resource_group_name
   location = var.resource_group_location
 }
 
-resource "azurerm_virtual_network" "newrsg-virnet" {
+resource "azurerm_virtual_network" "lab01-virnet" {
   name                = "${var.resource_group_name}-VirNet"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.newrsg.location
-  resource_group_name = azurerm_resource_group.newrsg.name
+  location            = azurerm_resource_group.lab01-rsg.location
+  resource_group_name = azurerm_resource_group.lab01-rsg.name
 }
 
-resource "azurerm_subnet" "newrsg-subnet" {
+resource "azurerm_subnet" "lab01-rsg-subnet" {
   name = "${var.resource_group_name}-subnet"
-  resource_group_name = azurerm_resource_group.newrsg.name
-  virtual_network_name = azurerm_virtual_network.newrsg-virnet.name
+  resource_group_name = azurerm_resource_group.lab01-rsg.name
+  virtual_network_name = azurerm_virtual_network.lab01-virnet.name
   address_prefixes = ["10.0.2.0/24"]
 }
 
-resource "azurerm_public_ip" "newrsg-pubip" {
+resource "azurerm_public_ip" "lab01-rsg-pubip" {
   count               = var.counts
   name                = "newreg-pubIP-${count.index}"
-  location            = azurerm_resource_group.newrsg.location
-  resource_group_name = azurerm_resource_group.newrsg.name
+  location            = azurerm_resource_group.lab01-rsg.location
+  resource_group_name = azurerm_resource_group.lab01-rsg.name
   allocation_method   = "Static"
 }
 
-resource "azurerm_lb" "example" {
-  name                = "TestLoadBalancer"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+resource "azurerm_lb" "lab01-lb" {
+  name                = "Lab01-LoadBalancer"
+  location            = azurerm_resource_group.lab01-rsg.location
+  resource_group_name = azurerm_resource_group.lab01-rsg.name
 
   frontend_ip_configuration {
-    name                 = "PublicIPAddress"
-    public_ip_address_id = azurerm_public_ip.example.id
+    name                 = "LB-PublicIPAddress"
+    public_ip_address_id = azurerm_public_ip.lab01-lb.id
   }
 }
 
+resource "azurerm_lb_backend_address_pool" "lab01-lb-addrpool" {
+  loadbalancer_id = azurerm_lb.lab01-lb.id
+  name            = "LB-BackEndAddressPool"
+}
 
-resource "azurerm_network_interface" "newrsg-nic" {
+resource "azurerm_network_interface" "lab01-rsg-nic" {
   count               = var.counts
   name                = "${var.resource_group_name}-NIC-${count.index}"
-  location            = azurerm_resource_group.newrsg.location
-  resource_group_name = azurerm_resource_group.newrsg.name
+  location            = azurerm_resource_group.lab01-rsg.location
+  resource_group_name = azurerm_resource_group.lab01-rsg.name
   
   ip_configuration {
     name                          = "${var.resource_group_name}-NIC-Internal"
-    subnet_id                     = azurerm_subnet.newrsg-subnet.id
+    subnet_id                     = azurerm_subnet.lab01-rsg-subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = element(azurerm_public_ip.newrsg-pubip.*.id, count.index)
+    public_ip_address_id          = element(azurerm_public_ip.lab01-rsg-pubip.*.id, count.index)
   }
 }
 
-resource "tls_private_key" "newrsg-ssh" {
-  algorithm = "RSA"
-  rsa_bits = 4096
+resource "azurerm_network_security_group" "lab01-rsg-nsg" {
+  name                = "lab01-rsg-NSG"
+  location            = azurerm_resource_group.lab01-rsg.location
+  resource_group_name = azurerm_resource_group.lab01-rsg.name
 }
 
-resource "azurerm_network_security_group" "newrsg-nsg" {
-  name                = "newrsg-NSG"
-  location            = azurerm_resource_group.newrsg.location
-  resource_group_name = azurerm_resource_group.newrsg.name
-}
-
-resource "azurerm_network_security_rule" "newrsg-nsr" {
-  name                         = "newrsg-NSR"
+resource "azurerm_network_security_rule" "lab01-rsg-nsr" {
+  name                         = "lab01-rsg-NSR"
   priority                     = 100
   direction                    = "Inbound"
-  access                       = "Allow"
+  access                       = "Deny"
   protocol                     = "Tcp"
-  source_port_range            = "8080-9090"
-  destination_port_range       = "8080-9090"
+  source_port_range            = "*"
+  destination_port_range       = "*"
   source_address_prefix        = "*"
   destination_address_prefix   = "*"
-  resource_group_name          = azurerm_resource_group.newrsg.name
-  network_security_group_name  = azurerm_network_security_group.newrsg-nsg.name
+  resource_group_name          = azurerm_resource_group.lab01-rsg.name
+  network_security_group_name  = azurerm_network_security_group.lab01-rsg-nsg.name
 }
 
-resource "azurerm_linux_virtual_machine" "newrsg-linux-vm" {
-  count                 = var.counts
-  name                  = "${var.resource_group_name}-vm-${count.index}"
-  resource_group_name   = azurerm_resource_group.newrsg.name
-  location              = azurerm_resource_group.newrsg.location
-  size                  = var.size_vm
-  admin_username        = var.admin_usr
-  network_interface_ids = [
-    element(azurerm_network_interface.newrsg-nic.*.id, count.index)
-  ]
+data "azurerm_image" "lab01-packer-img" {
+  name                = var.image_name
+  resource_group_name = var.image_resource_group
+}
 
-  admin_ssh_key {
-    username = var.admin_usr
-    public_key = tls_private_key.newrsg-ssh.public_key_openssh
-  }
+resource "azurerm_linux_virtual_machine" "lab01-rsg-linux-vm" {
+  count                           = var.counts
+  name                            = "${var.resource_group_name}-vm-${count.index}"
+  resource_group_name             = azurerm_resource_group.lab01-rsg.name
+  location                        = azurerm_resource_group.lab01-rsg.location
+  size                            = var.size_vm
+  admin_username                  = var.admin_usr
+  disable_password_authentication = false
+  network_interface_ids = [
+    element(azurerm_network_interface.lab01-rsg-nic.*.id, count.index)
+  ]
 
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
   }
 }
 
