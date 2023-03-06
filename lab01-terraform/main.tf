@@ -96,5 +96,10 @@ resource "azurerm_linux_virtual_machine" "lab01-rsg-linux-vm" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
+
+  storage_image_reference {
+    id = "${data.azurerm_image.lab01-packer-img.id}"
+  }
+
 }
 
