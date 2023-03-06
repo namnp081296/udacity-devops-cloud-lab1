@@ -32,7 +32,7 @@ resource "azurerm_lb" "lab01-lb" {
 
   frontend_ip_configuration {
     name                 = "LB-PublicIPAddress"
-    public_ip_address_id = azurerm_public_ip.lab01-lb.id
+    public_ip_address_id = azurerm_public_ip.lab01-rsg-pubip.id
   }
 }
 
@@ -87,6 +87,7 @@ resource "azurerm_linux_virtual_machine" "lab01-rsg-linux-vm" {
   location                        = azurerm_resource_group.lab01-rsg.location
   size                            = var.size_vm
   admin_username                  = var.admin_usr
+  admin_password                  = var.admin_pwd
   disable_password_authentication = false
   network_interface_ids = [
     element(azurerm_network_interface.lab01-rsg-nic.*.id, count.index)
@@ -97,9 +98,6 @@ resource "azurerm_linux_virtual_machine" "lab01-rsg-linux-vm" {
     storage_account_type = "Standard_LRS"
   }
 
-  storage_image_reference {
-    id = "${data.azurerm_image.lab01-packer-img.id}"
-  }
-
+  source_image_id = "${data.azurerm_image.lab01-packer-img.id}"
 }
 
