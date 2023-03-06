@@ -18,8 +18,7 @@ resource "azurerm_subnet" "lab01-rsg-subnet" {
 }
 
 resource "azurerm_public_ip" "lab01-rsg-pubip" {
-  count               = var.counts
-  name                = "newreg-pubIP-${count.index}"
+  name                = "Lab01-PubIP"
   location            = azurerm_resource_group.lab01-rsg.location
   resource_group_name = azurerm_resource_group.lab01-rsg.name
   allocation_method   = "Static"
@@ -42,7 +41,7 @@ resource "azurerm_lb_backend_address_pool" "lab01-lb-addrpool" {
 }
 
 resource "azurerm_network_interface" "lab01-rsg-nic" {
-  count               = var.counts
+  #count               = var.counts
   name                = "${var.resource_group_name}-NIC-${count.index}"
   location            = azurerm_resource_group.lab01-rsg.location
   resource_group_name = azurerm_resource_group.lab01-rsg.name
@@ -51,7 +50,6 @@ resource "azurerm_network_interface" "lab01-rsg-nic" {
     name                          = "${var.resource_group_name}-NIC-Internal"
     subnet_id                     = azurerm_subnet.lab01-rsg-subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = element(azurerm_public_ip.lab01-rsg-pubip.*.id, count.index)
   }
 }
 
