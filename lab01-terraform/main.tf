@@ -41,7 +41,7 @@ resource "azurerm_lb_backend_address_pool" "lab01-lb-addrpool" {
 }
 
 resource "azurerm_network_interface" "lab01-rsg-nic" {
-  #count               = var.counts
+  count               = var.counts
   name                = "${var.resource_group_name}-NIC-${count.index}"
   location            = azurerm_resource_group.lab01-rsg.location
   resource_group_name = azurerm_resource_group.lab01-rsg.name
