@@ -1,2 +1,2 @@
 # Official
-az policy definition create --name 'tagging-policy' --description 'Deny creation of resources if they do not have a tags' --subscription <Enter your subscription> --mode ALL --rules "{ \"if\": { \"field\": \"tags\", \"exists\": \"false\"}, \"then\": { \"effect\": \"deny\" } }"}
+az policy definition create --name 'tagging-policy' --description 'Deny creation of resources if they do not have a tags' --subscription <Enter your subscription> --mode ALL --rules "{ \"if\": { \"field\": \"tags\", \"exists\": \"false\"}, \"then\": { \"effect\": \"deny\" } }"
