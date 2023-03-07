@@ -16,9 +16,9 @@
 	},
 
     	"managed_image_resource_group_name": "Azuredevops",
-    	"managed_image_name": "lab01image",
+    	"managed_image_name": "Lab01-image",
  
-    	"location": "East US",
+    	"location": "West Europe",
     	"vm_size": "Standard_B1s"
 	}],
 	"provisioners": [{
