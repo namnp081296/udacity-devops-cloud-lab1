@@ -1,5 +1,5 @@
 variable "counts" {
-  default = 2
+  default = 1
 }
 
 variable "resource_group_name" {
