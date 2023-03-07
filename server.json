@@ -11,12 +11,12 @@
     	"image_offer": "UbuntuServer",
     	"image_sku": "18.04-LTS",
 		
-		"azure_tags": {
-			"os": "linux"
-		},
+	"azure_tags": {
+		"os": "linux"
+	},
 
     	"managed_image_resource_group_name": "Azuredevops",
-    	"managed_image_name": "myFirs",
+    	"managed_image_name": "lab01image",
  
     	"location": "East US",
     	"vm_size": "Standard_B1s"
