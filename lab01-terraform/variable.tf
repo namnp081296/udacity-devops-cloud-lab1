@@ -5,13 +5,13 @@ variable "counts" {
 variable "resource_group_name" {
   type = string
   description = "Name of Resource Group"
-  default = "Lab01-RSG"
+  default = "Azuredevops"
 }
 
 variable "resource_group_location" {
   type = string
   description = "Location of Resource Group"
-  default = "centralus"
+  default = "West Europe"
 }
 
 variable "size_vm" {
@@ -31,7 +31,7 @@ variable "admin_pwd" {
 
 variable "image_name" {
     type = string
-    default = "myFirs"
+    default = "Lab01-image"
 }
 
 variable "image_resource_group" {
