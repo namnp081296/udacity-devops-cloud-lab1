@@ -38,3 +38,8 @@ variable "image_resource_group" {
     type = string
     default = "Azuredevops"
 }
+
+variable "availability_set_name" {
+    type = string
+    default = "Lab01AvailabilitySet"
+}
