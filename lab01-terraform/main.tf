@@ -1,7 +1,15 @@
-# resource "azurerm_resource_group" "lab01-rsg" {
-#   name     = var.resource_group_name
-#   location = var.resource_group_location
-# }
+# Create Availability Set and Get Data
+resource "azurerm_availability_set" "lab01-avlset" {
+  name                = var.availability_set_name
+  location            = var.resource_group_location
+  resource_group_name = var.resource_group_name
+}
+
+data "azurerm_availability_set" "lab01-avlset" {
+  name                = var.availability_set_name
+  depends_on = [azurerm_availability_set.lab01-avlset]
+  resource_group_name = var.resource_group_name
+}
 
 resource "azurerm_virtual_network" "lab01-virnet" {
   name                = "${var.resource_group_name}-VirNet"
@@ -48,10 +56,16 @@ resource "azurerm_network_interface" "lab01-rsg-nic" {
   resource_group_name = var.resource_group_name
   
   ip_configuration {
-    name                          = "${var.resource_group_name}-NIC-Internal"
+    name                          = "${var.resource_group_name}-NIC"
     subnet_id                     = azurerm_subnet.lab01-rsg-subnet.id
     private_ip_address_allocation = "Dynamic"
   }
+}
+
+resource "azurerm_network_interface_backend_address_pool_association" "lab01-backendaddrpool-association" {
+  network_interface_id    = azurerm_network_interface.lab01-rsg-nic.id
+  ip_configuration_name   = "${var.resource_group_name}-NIC"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.lab01-lb-addrpool.id
 }
 
 resource "azurerm_network_security_group" "lab01-rsg-nsg" {
@@ -74,29 +88,67 @@ resource "azurerm_network_security_rule" "lab01-rsg-nsr" {
   network_security_group_name  = azurerm_network_security_group.lab01-rsg-nsg.name
 }
 
+# Get image data
 data "azurerm_image" "lab01-packer-img" {
   name                = var.image_name
   resource_group_name = var.image_resource_group
 }
 
-resource "azurerm_linux_virtual_machine" "lab01-rsg-linux-vm" {
-  count                           = var.counts
-  name                            = "${var.resource_group_name}-vm-${count.index}"
-  resource_group_name             = var.resource_group_name
-  location                        = var.resource_group_location
-  size                            = var.size_vm
-  admin_username                  = var.admin_usr
-  admin_password                  = var.admin_pwd
-  disable_password_authentication = false
-  network_interface_ids = [
-    azurerm_network_interface.lab01-rsg-nic.id
-  ]
+# Create Linux VM
+resource "azurerm_virtual_machine" "lab01-rsg-linux-vm" {
+  count                             = var.counts
+  name                              = "${var.resource_group_name}-vm-${count.index}"
+  resource_group_name               = var.resource_group_name
+  location                          = var.resource_group_location
+  vm_size                           = var.size_vm
+  # admin_username                  = var.admin_usr
+  # admin_password                  = var.admin_pwd
+  # disable_password_authentication = false
+  network_interface_ids = [azurerm_network_interface.lab01-rsg-nic.id]
 
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+  storage_image_reference {
+    id = "${data.azurerm_image.lab01-packer-img.id}"
   }
 
-  source_image_id = "${data.azurerm_image.lab01-packer-img.id}"
+  storage_os_disk {
+    name              = "linux-vm-osdisk-${count.index}"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name  = "${var.resource_group_name}-vm-${count.index}"
+    admin_username = var.admin_usr  
+    admin_password = var.admin_pwd
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+  
+  tags = {
+    environment = "Lab01-Production"
+  }
+
+  # source_image_id = "${data.azurerm_image.lab01-packer-img.id}"
+  availability_set_id = "${data.azurerm_availability_set.lab01-avlset.id}"
+
 }
 
+resource "azurerm_managed_disk" "lab01-managed-disk" {
+  name                 = "${var.resource_group_name}-disk1"
+  location             = var.resource_group_location
+  resource_group_name  = var.resource_group_name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = 10
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "lab01-vm-data-disk-attach" {
+  count = var.counts
+  managed_disk_id    = azurerm_managed_disk.lab01-managed-disk.id
+  virtual_machine_id = azurerm_virtual_machine.lab01-rsg-linux-vm[count.index].id
+  lun                = "10"
+  caching            = "ReadWrite"
+}
