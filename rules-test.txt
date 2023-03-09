@@ -1,4 +1,0 @@
-#!/bin/bash
-
-# Official
-az policy definition create --name 'tagging-policy' --description 'Deny creation of resources if they do not have a tags' --subscription 456cc604-544c-45f8-99d0-c1b73aeec440 --mode ALL --rules "{ \"if\": { \"field\": \"tags\", \"exists\": \"false\"}, \"then\": { \"effect\": \"deny\" } }"
