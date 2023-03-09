@@ -1,3 +1,2 @@
 .terraform*
-lab01-terraform/*.plan
 terraform.*
