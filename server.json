@@ -2,9 +2,9 @@
 	"builders": [{
 		"type": "azure-arm",
  
-    	"client_id": "099fd190-7e02-48c9-9147-c98f61234409",
-    	"client_secret": ".rK8Q~f85VfgSQKEe4llRlBoqkup~57UYNLMbdgk",
-    	"subscription_id": "456cc604-544c-45f8-99d0-c1b73aeec440",
+    	"client_id": "49553a3a-9504-47d3-830e-90244c16151c",
+    	"client_secret": "kw68Q~TY-KWJa-Ujpp6bZZ27j1Pte_EJZCoc4bR-",
+    	"subscription_id": "dfbd8d6e-c77f-414e-a3f4-14c567b43de3",
  
     	"os_type": "Linux",
     	"image_publisher": "Canonical",
