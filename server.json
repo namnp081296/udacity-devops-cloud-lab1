@@ -2,9 +2,9 @@
 	"builders": [{
 		"type": "azure-arm",
  
-    	"client_id": "49553a3a-9504-47d3-830e-90244c16151c",
-    	"client_secret": "kw68Q~TY-KWJa-Ujpp6bZZ27j1Pte_EJZCoc4bR-",
-    	"subscription_id": "dfbd8d6e-c77f-414e-a3f4-14c567b43de3",
+    	"client_id": "7ea4e969-3318-46f9-8659-e2388f60a964",
+    	"client_secret": "XJr8Q~LVXAzntOKJ3H9jxN02bvoK5idnPgHOMckQ",
+    	"subscription_id": "2fd8f952-d489-45bc-a39a-aeb5b6aff6d2",
  
     	"os_type": "Linux",
     	"image_publisher": "Canonical",
@@ -27,7 +27,8 @@
 			"nohup busybox httpd -f -p 80 &"
 		],
 		"inline_shebang": "/bin/sh -x",
-		"type": "shell"
+		"type": "shell",
+		"execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
 	}]
 }
 
