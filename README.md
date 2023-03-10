@@ -27,6 +27,10 @@ For this project, you will write a Packer template and a Terraform template to d
 - terraform plan -out yourfilename.plan (Check the components will be created before deploy)
 - terraform apply yourfilename.plan (Deploy the plan you create)
 
+**Note**: About the **vars.tf** file, this is the file where you can specified and customize your variable based on demand your infrastructure and that will apply to your configuration when running **terraform apply**. For example, if you want to increase or decrease the number of VM, you can change the variable **counts** into the number you want.
+
+**Remember**  to run the command **terraform plan** before command **terraform apply** to make sure the component will be created correctly. 
+
 ### Output
 #### After finish all these steps above:
 1. Check the policy by go to the Portal then type "Policy" in search box 
