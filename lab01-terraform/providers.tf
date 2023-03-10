@@ -13,9 +13,9 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
-  subscription_id = "dfbd8d6e-c77f-414e-a3f4-14c567b43de3"
-  client_id       = "49553a3a-9504-47d3-830e-90244c16151c"
-  client_secret   = "kw68Q~TY-KWJa-Ujpp6bZZ27j1Pte_EJZCoc4bR-"
+  subscription_id = "2fd8f952-d489-45bc-a39a-aeb5b6aff6d2"
+  client_id       = "7ea4e969-3318-46f9-8659-e2388f60a964"
+  client_secret   = "XJr8Q~LVXAzntOKJ3H9jxN02bvoK5idnPgHOMckQ"
   tenant_id       = "f958e84a-92b8-439f-a62d-4f45996b6d07"
 }
 
