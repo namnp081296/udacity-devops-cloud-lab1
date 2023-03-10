@@ -123,7 +123,7 @@ resource "azurerm_network_security_group" "lab01-rsg-nsg" {
     source_port_range          = "*"
     destination_port_range     = "80"
     source_address_prefix      = "*"
-    destination_address_prefix = "10.0.2.0/24"
+    destination_address_prefix = "*"
   }
 }
 
